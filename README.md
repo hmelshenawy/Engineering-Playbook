@@ -32,13 +32,23 @@ ______________________________________________INDEX_____________________________
 Personal Engineering Playbook
 │
 ├── AI
+
 ├── Backend
+
 ├── Frontend
+
 ├── Python
+
 ├── Docker
+
 ├── Git
+
 ├── SpecKit
+
 ├── Databases
+
 ├── Linux
+
 ├── Templates
+
 └── Lessons Learned
