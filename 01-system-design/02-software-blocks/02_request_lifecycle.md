@@ -1,6 +1,6 @@
 # Request Lifecycle
 
-> الملف ده هو تكملة لـ [01 - Software System Overview](./01_system_overview.md).
+> الملف ده تكملة لـ [01 - Software System Overview](./01_system_overview.md).
 >
 > السؤال اللي فضل معلق في الآخر كان: "لو الـSoftware System متقسم لـBlocks كتير، فكيف الـRequest بياخد طريقه عبر كل الـBlocks دي؟"
 >
@@ -24,9 +24,9 @@ User sees the result
 
 ### المشكلة اللي بتحلها
 
-الـUser مش بيشوف الـBlocks دي. هو بيشوع حاجة: *دوس Login*. وبيقوله حاجة: *تم تسجيل الدخول*.
+الـUser مش بيشوف الـBlocks دي. هو بيعمل حاجة بسيطة: *يدوس Login*. وبيشوف حاجة كمان أبسط: *تم تسجيل الدخول*.
 
-بين اللحظتين دي، الـRequest بيسافر عبر Blocks مختلفة، وكل Block بتعمل شغلها وتسيبه للـBlock اللي بعدها. من غير الفهم ده، بقية الكورس هيبقى سلسلة من الـTools من غير سبب.
+بين اللحظتين دول، الـRequest بيسافر عبر Blocks مختلفة، وكل Block بتعمل شغلها وتسيبه للـBlock اللي بعدها. من غير الفهم ده، بقية الكورس هيبقى سلسلة من الـTools من غير سبب.
 
 ### فين موجود جوه الـSystem؟
 
@@ -51,7 +51,7 @@ Login Request
 └── Response     (الرد اللي بيرجع بنفس الطريق)
 ```
 
-> كل Block هنا هنتعامل معاه كأنه **Black Box**. يعني مش هنشرح إيه جواه دلوقتي. كل اللي يهمنا هو: **الـRequest بيزورها ليه؟** والـBlock دي **بتطلعه ليه؟** باقي التفاصيل لكل Block في الـChapter بتاعه.
+> كل Block هنا هنتعامل معاه كأنه **Black Box**. يعني مش هنشرح إيه جواه دلوقتي. كل اللي يهمنا هو: **الـRequest بيزورها ليه؟** والـBlock دي **بتنتج إيه؟** باقي التفاصيل لكل Block في الـChapter بتاعه.
 
 ---
 
@@ -59,16 +59,16 @@ Login Request
 
 الـRequest ماشي في خط واحد متسلسل تقريباً، بس في محطات بيحصل فيها تفاعل مع Blocks تانية:
 
-| From → To                     | Direction | Method | Sync/Async | Purpose                          |
-| ----------------------------- | --------- | ------ | ---------- | -------------------------------- |
-| User → Browser                | Outgoing  | Click  | Sync       | تبدأ الـRequest                    |
-| Frontend → Backend             | Outgoing  | HTTP   | Sync       | تبعت الـLogin data                 |
-| Backend → Authentication       | Internal  | Call   | Sync       | تتحقق من الـUser                   |
-| Backend → Business Logic       | Internal  | Call   | Sync       | تـprocess الـLogin                |
-| Backend → Database             | Outgoing  | Query  | Sync       | تقرأ بيانات الـUser                |
-| Backend → Frontend             | Incoming  | HTTP   | Sync       | ترجع الـResponse                   |
+| From → To                | Direction | Method | Sync/Async | Purpose                   |
+| ------------------------ | --------- | ------ | ---------- | ------------------------- |
+| User → Browser           | Outgoing  | Click  | Sync       | تبدأ الـRequest            |
+| Frontend → Backend       | Outgoing  | HTTP   | Sync       | تبعت الـLogin data         |
+| Backend → Authentication  | Internal  | Call   | Sync       | تتحقق من الـUser           |
+| Backend → Business Logic  | Internal  | Call   | Sync       | تعمل process للـLogin      |
+| Backend → Database        | Outgoing  | Query  | Sync       | تقرأ بيانات الـUser        |
+| Backend → Frontend        | Incoming  | HTTP   | Sync       | ترجع الـResponse           |
 
-مبدأ مهم: الـRequest ماشي **Synched** معظم الطريق. يعني كل Block بتستنى اللي بعدها تخلص الأول. عشان كده أي Block بتأخر، بيبطّي الـRequest كله. (دي مشكلة هنشوف حلها في الـChapters اللي بعدها).
+مبدأ مهم: الـRequest ماشي **Sync** معظم الطريق. يعني كل Block بتستنى اللي بعدها تخلص الأول. عشان كده أي Block بتبطّي، الـRequest كله بيبطّي وراها. (دي مشكلة هنشوف حلها في الـChapters اللي بعدها).
 
 ---
 
@@ -108,11 +108,11 @@ User
 
 ### 2. Browser
 
-الـBrowser هو البيئة اللي شغّالة فيها الـFrontend. هو اللي بيلتقط الـClick ويفضي الـFrontend إنه يشتغل.
+الـBrowser هو البيئة اللي شغّالة فيها الـFrontend. هو اللي بيلتقط الـClick ويخلي الـFrontend يشتغل.
 
 ### 3. Frontend
 
-الـFrontend بياخد البيانات اللي الـUser كتبها (الـEmail والـPassword) وبيعملها format زي اللي الـBackend بيتوقعه. ده شغله الأول.
+الـFrontend بياخد البيانات اللي الـUser كتبها (الـEmail والـPassword) ويرتبها بالـformat اللي الـBackend بيتوقعه. ده شغله الأول.
 
 ### 4. HTTP Request
 
@@ -124,11 +124,11 @@ User
 
 ### 6. Authentication
 
-الـAuthentication بيأكد **مين** الـUser ده. بيشوف الـEmail والـPassword بتوعه صح ولا لأ، ويقرر هو الـPerson الصح ولا لأ. ده الـBlock اللي بيتـcheck فيه الـIdentity.
+الـAuthentication بيأكد **مين** الـUser ده. بيشوف الـEmail والـPassword بتوعه صح ولا لأ، ويقرر هو الـPerson الصح ولا لأ. ده الـBlock اللي بيتحقق من الـIdentity.
 
 ### 7. Business Logic
 
-الـBusiness Logic هو العقل. هو اللي بياخذ القرار: هل الـLogin ده مسموح بيه؟ هل لازم نعمل Session؟ هل لازم نـgenerate JWT؟ هو اللي بـapply قواعد الـBusiness.
+الـBusiness Logic هو العقل. هو اللي بياخذ القرار: هل الـLogin ده مسموح بيه؟ هل لازم نعمل Session؟ هل لازم نُنشئ JWT؟ هو اللي بيطبّق قواعد الـBusiness.
 
 ### 8. Database
 
@@ -136,23 +136,23 @@ User
 
 ### 9. Response
 
-بعد ما الـDatabase بترجع بالبيانات والـBackend بيخلص كل الـchecks، الـBackend بيـbuild الـ**Response** (زي Success أو Error) ويرجعه بنفس الطريق.
+بعد ما الـDatabase بترجع بالبيانات والـBackend بيخلص كل خطوات الـValidation، الـBackend بيبني الـ**Response** (زي Success أو Error) ويرجعه بنفس الطريق.
 
 ```text
 Database
   ↓ query result
 Business Logic
-  ↓ builds result
+  ↓ بيبني الـresult
 Authentication
-  ↓ attaches identity
+  ↓ بيضيف الـidentity
 Backend
-  ↓ builds HTTP Response
+  ↓ بيبني HTTP Response
 HTTP
   ↓
 Browser
   ↓
 Frontend
-  ↓ renders
+  ↓ بيعمل render
 User
   ↓ sees "Logged in"
 ```
@@ -176,33 +176,33 @@ User
    ↓
 الـBackend بيبعت الـdata للـAuthentication
    ↓
-الـAuthentication بيـquery الـDatabase على الـUser record
+الـAuthentication بيبعت Query للـDatabase على الـUser record
    ↓
 الـDatabase بترجع الـUser record (فيه الـPassword hash)
    ↓
 الـAuthentication بيقارن الـPassword ويرجع نجاح/فشل
    ↓
-الـBusiness Logic بيـcreate Session / JWT
+الـBusiness Logic بينشئ Session و JWT
    ↓
-الـBackend بيـbuild HTTP Response (200 OK + token)
+الـBackend بيبني HTTP Response (200 OK + token)
    ↓
 الـHTTP بيوصل للـBrowser
    ↓
-الـFrontend بيـrender: "Welcome back"
+الـFrontend بيعرض: "Welcome back"
    ↓
 الـUser بيشوف: "تم تسجيل الدخول"
 ```
 
-دي نفس الـFlow اللي حصل. لو أي Block في النص وقّع، الـRequest كله بيوقف. ده عيب طبيعي للـSynched flow.
+دي نفس الـFlow اللي حصل. لو أي Block في النص وقّع، الـRequest كله بيوقف. ده عيب طبيعي للـSync flow.
 
 ---
 
 ## 6. Failure and Limits
 
 * **إيه اللي ممكن يفشل؟** أي Block في الطريق ممكن يقع. الـBackend مش متاح، الـDatabase وقّعت، الـAuthentication رفض الـUser، الـHTTP timeout... أي حاجة من دي بتفشل الـLogin.
-* **النظام بيتعامل معاها إزاي؟** كل Block بيرجع error بدل ما يفشل بصمت، والـResponse بيرجع يوضح للـUser إن في مشكلة.
-* **متى مش محتاجين الـFlow ده؟** لو الـSystem صغير جداً أو الداتا كلها Client-side، ممكن الـRequest ميلمسش كل الـBlocks دي. بس في الغالب Login بيمشي بالطريق ده.
-* **المشكلة اللي لسه موجودة:** لحد دلوقتي احنا عاملين كل Block كأنه **Black Box**. الـRequest وصل أول Block في الطريق — الـFrontend — بس إيه اللي بيحصل جوه الـFrontend قبل الـRequest ما يمشي في الشبكة؟
+* **النظام بيتعامل معاها إزاي؟** كل Block بترجع error بدل ما تفشل بصمت، والـResponse بيرجع يوضح للـUser إن في مشكلة.
+* **متى مش محتاجين الـFlow ده؟** لو الـSystem صغير جداً أو الـdata كلها Client-side، ممكن الـRequest ميلمسش كل الـBlocks دي. بس في الغالب Login بيمشي بالطريق ده.
+* **المشكلة اللي لسه موجودة:** لحد دلوقتي احنا عاملين كل Block كأنه **Black Box**. الـRequest وصل أول Block في الطريق — الـFrontend — بس إيه اللي بيحصل جوه الـFrontend قبل ما الـRequest يمشي في الشبكة؟
 
 ---
 
@@ -224,16 +224,16 @@ Frontend
 User
 ```
 
-كل Block في الرسم ده هنتعمق فيه في الـChapter بتاعه. هنا بس بنعمل map للطريق.
+كل Block في الرسم ده هنتعمق فيه في الـChapter بتاعه. هنا بس بنرسم map للطريق.
 
 ---
 
 ## 8. Key Takeaways
 
 * الـRequest Lifecycle هي **رحلة واحدة** للـRequest من الـUser لحد ما الـResponse يرجع.
-* كل Block ليها **مسؤولية واحدة**، والـRequest بيزورها عشان تـperform المسؤولية دي.
+* كل Block ليها **مسؤولية واحدة**، والـRequest بيزورها عشان تعمل المسؤولية دي.
 * الـResponse بيرجع **بنفس الطريق بالعكس**، من الـBackend لحد الـUser.
-* معظم الـFlow ده **Sync**، فأي Block بتبطّي بتـpull الـRequest كله وراها.
+* معظم الـFlow ده **Sync**، فأي Block بتبطّي، الـRequest كله بيبطّي وراها.
 * احنا لسه معاملين كل Block كـ**Black Box** — internals بتاعتها لكل Block في الـChapter بتاعه.
 
 ---
