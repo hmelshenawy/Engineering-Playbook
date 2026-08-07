@@ -1,80 +1,100 @@
 # Request Lifecycle
 
-> الملف ده تكملة لـ [01 - Software System Overview](./01_system_overview.md).
+> This file continues from [01 - Software System Overview](./01_system_overview.md).
 >
-> السؤال اللي فضل معلق في الآخر كان: "لو الـSoftware System متقسم لـBlocks كتير، فكيف الـRequest بياخد طريقه عبر كل الـBlocks دي؟"
+> At the end of the last chapter we had an open question:
+> "If a software system is split into many blocks, how does one request travel through all of them?"
 >
-> هنا هنتبع **Request واحد** من أول نقرة لحد ما الـResponse يرجع للمستخدم.
+> Here we follow **one request** from the first click to the final response.
 
 ---
 
 ## 1. Overview
 
-### إيه هو الـRequest Lifecycle؟
+### What is the Request Lifecycle?
 
-الـRequest Lifecycle هي **رحلة واحدة** بيعملها الـRequest من لحظة ما الـUser يضغط على حاجة، لحد ما يشوف النتيجة على الشاشة.
+The Request Lifecycle is **one trip** that a request makes.
+It starts when the user does something.
+It ends when the user sees the result.
 
 ```text
 User click
    ↓
-... رحلة عبر Blocks كتير ...
+... a trip through many blocks ...
    ↓
 User sees the result
 ```
 
-### المشكلة اللي بتحلها
+### What problem does it solve?
 
-الـUser مش بيشوف الـBlocks دي. هو بيعمل حاجة بسيطة: *يدوس Login*. وبيشوف حاجة كمان أبسط: *تم تسجيل الدخول*.
+The user does not see the blocks.
+The user does one simple thing: *click Login*.
+The user sees one simple thing: *Logged in*.
 
-بين اللحظتين دول، الـRequest بيسافر عبر Blocks مختلفة، وكل Block بتعمل شغلها وتسيبه للـBlock اللي بعدها. من غير الفهم ده، بقية الكورس هيبقى سلسلة من الـTools من غير سبب.
+Between those two moments, the request travels through many blocks.
+Each block does its job and passes the request forward.
+Without understanding this trip, the rest of this course is just a list of tools with no reason.
 
-### فين موجود جوه الـSystem؟
+### Where does it sit inside the system?
 
-الـRequest Lifecycle مش Block لوحده. ده **الطريق** اللي الـRequest بيمشي فيه عبر الـBlocks. هو اللي بيربط الـSystem كله ببعضه.
+The Request Lifecycle is not a block by itself.
+It is **the path** the request takes through the blocks.
+It is what connects the whole system together.
 
 ---
 
 ## 2. Inside
 
-الـRequest Lifecycle مش بيحتوي على Components. هو بيوصف **تسلسل** من المحطات. كل محطة هي Block من الـBlocks اللي اتكلمنا عنها.
+The Request Lifecycle does not contain components.
+It describes a **sequence of stops**.
+Each stop is one of the blocks we talked about before.
 
 ```text
 Login Request
-├── User         (نقطة البداية)
-├── Browser      (البيئة اللي شغالة فيها الواجهة)
-├── Frontend     (اللي بيشكل الـRequest)
-├── HTTP Request (الرسالة اللي ماشية في الشبكة)
-├── Backend      (اللي بيستقبل وبيدير)
-├── Authentication (اللي بيأكد مين الـUser)
-├── Business Logic (اللي بياخذ القرار)
-├── Database     (اللي بيخزن ويجيب البيانات)
-└── Response     (الرد اللي بيرجع بنفس الطريق)
+├── User            (the starting point)
+├── Browser         (where the frontend runs)
+├── Frontend        (shapes the request)
+├── HTTP Request    (the message on the network)
+├── Backend         (receives and directs)
+├── Authentication  (checks who the user is)
+├── Business Logic  (makes the decision)
+├── Database        (stores and returns data)
+└── Response        (the answer going back)
 ```
 
-> كل Block هنا هنتعامل معاه كأنه **Black Box**. يعني مش هنشرح إيه جواه دلوقتي. كل اللي يهمنا هو: **الـRequest بيزورها ليه؟** والـBlock دي **بتنتج إيه؟** باقي التفاصيل لكل Block في الـChapter بتاعه.
+> We treat every block here as a **black box**.
+> A black box means: we know what goes in and what comes out, but we do not look inside.
+> We will not explain what is inside each block now.
+> Each block gets its own chapter later.
+> The only thing we care about here is: **why does the request visit this block?**
 
 ---
 
 ## 3. Connections
 
-الـRequest ماشي في خط واحد متسلسل تقريباً، بس في محطات بيحصل فيها تفاعل مع Blocks تانية:
+The request moves in one mostly straight line.
+But at some stops it talks to other blocks too.
 
-| From → To                | Direction | Method | Sync/Async | Purpose                   |
-| ------------------------ | --------- | ------ | ---------- | ------------------------- |
-| User → Browser           | Outgoing  | Click  | Sync       | تبدأ الـRequest            |
-| Frontend → Backend       | Outgoing  | HTTP   | Sync       | تبعت الـLogin data         |
-| Backend → Authentication  | Internal  | Call   | Sync       | تتحقق من الـUser           |
-| Backend → Business Logic  | Internal  | Call   | Sync       | تعمل process للـLogin      |
-| Backend → Database        | Outgoing  | Query  | Sync       | تقرأ بيانات الـUser        |
-| Backend → Frontend        | Incoming  | HTTP   | Sync       | ترجع الـResponse           |
+| From → To                 | Direction | Method | Sync/Async | Purpose                  |
+| ------------------------- | --------- | ------ | ---------- | ------------------------ |
+| User → Browser            | Outgoing  | Click  | Sync       | Start the request         |
+| Frontend → Backend         | Outgoing  | HTTP   | Sync       | Send the login data      |
+| Backend → Authentication   | Internal  | Call   | Sync       | Check the user            |
+| Backend → Business Logic   | Internal  | Call   | Sync       | Process the login         |
+| Backend → Database         | Outgoing  | Query  | Sync       | Read the user data        |
+| Backend → Frontend         | Incoming  | HTTP   | Sync       | Return the response       |
 
-مبدأ مهم: الـRequest ماشي **Sync** معظم الطريق. يعني كل Block بتستنى اللي بعدها تخلص الأول. عشان كده أي Block بتبطّي، الـRequest كله بيبطّي وراها. (دي مشكلة هنشوف حلها في الـChapters اللي بعدها).
+One important idea: the request is **Sync** for most of the trip.
+Sync means each block waits for the next one to finish before it can continue.
+So if one block is slow, the whole request waits.
+(We will see how to fix this in later chapters.)
 
 ---
 
 ## 4. Main Flow
 
-تعالوا نتبع **Login Request** واحد خطوة بخطوة. نفس الـScenario هيفضل معانا طول الملف.
+Let us follow one **Login request** step by step.
+The same scenario stays with us for the whole file.
 
 ```text
 User
@@ -100,115 +120,144 @@ Browser
 User
 ```
 
-نشرح كل محطة في سطر-سطرين:
+For each stop we answer three things:
+- **Why** the request goes there.
+- **What enters** that block.
+- **What leaves** that block.
 
 ### 1. User
 
-الـUser بيدوس على زرار **Login**. هو نقطة البداية. من غيره مفيش Request أصلاً.
+- **Why:** The user is the starting point. Without the user, there is no request.
+- **What enters:** The user thinks "I want to log in" and clicks the **Login** button.
+- **What leaves:** A click event. That click is the spark that starts everything.
 
 ### 2. Browser
 
-الـBrowser هو البيئة اللي شغّالة فيها الـFrontend. هو اللي بيلتقط الـClick ويخلي الـFrontend يشتغل.
+- **Why:** The frontend lives inside the browser. The browser is what catches the click and wakes the frontend up.
+- **What enters:** The click event from the user.
+- **What leaves:** A call to the frontend code, telling it "the user clicked Login."
 
 ### 3. Frontend
 
-الـFrontend بياخد البيانات اللي الـUser كتبها (الـEmail والـPassword) ويرتبها بالـformat اللي الـBackend بيتوقعه. ده شغله الأول.
+- **Why:** The backend cannot read raw clicks. It needs clean, organized data. The frontend prepares that data.
+- **What enters:** The form values the user typed — the **email** and the **password**.
+- **What leaves:** A ready **HTTP Request** that contains those values in a format the backend can read.
 
 ### 4. HTTP Request
 
-الـFrontend بيبعت البيانات كـ**HTTP Request** على الشبكة. الـHTTP هو لغة الاتصال بين الـClient والـBackend. من غيره الـRequest مش هيوصل.
+- **Why:** The frontend and the backend live in different places. The frontend runs on the user's device. The backend runs on a server far away. They need a way to send messages. That way is **HTTP**.
+- HTTP is just a set of rules for how two machines talk over the network.
+- **What enters:** The request the frontend just built.
+- **What leaves:** The same request, now traveling over the network toward the backend.
 
 ### 5. Backend
 
-الـBackend بيستقبل الـHTTP Request. هو المسؤول عن إنه يقراه، يفهمه، ويبصله على الـBlocks اللي جواه (زي الـAuthentication والـBusiness Logic والـDatabase).
+- **Why:** The backend is the manager. It receives the request, understands it, and sends it to the right inner blocks.
+- **What enters:** The HTTP Request that arrived from the network.
+- **What leaves:** A clean internal call to the next block — usually Authentication.
 
 ### 6. Authentication
 
-الـAuthentication بيأكد **مين** الـUser ده. بيشوف الـEmail والـPassword بتوعه صح ولا لأ، ويقرر هو الـPerson الصح ولا لأ. ده الـBlock اللي بيتحقق من الـIdentity.
+- **Why:** Before we do anything, we must answer one question: *who is this user?* Authentication is the block that checks identity.
+- **What enters:** The email and password from the request.
+- **What leaves:** A clear answer — "yes, this is the right user" or "no, rejected."
 
 ### 7. Business Logic
 
-الـBusiness Logic هو العقل. هو اللي بياخذ القرار: هل الـLogin ده مسموح بيه؟ هل لازم نعمل Session؟ هل لازم نُنشئ JWT؟ هو اللي بيطبّق قواعد الـBusiness.
+- **Why:** Authentication only says *who* the user is. It does not decide *what should happen*. The Business Logic is the brain that makes the real decision: should this login be allowed? Should we start a Session? Should we create a JWT?
+- **What enters:** The "yes, valid user" answer from Authentication.
+- **What leaves:** A decision — "login is allowed, here is the proof" (for example, a token).
 
 ### 8. Database
 
-الـDatabase هي المكان اللي بيتخزن فيه بيانات الـUser. الـBackend بيبعت Query للـDatabase عشان يجيب الـUser record ويتأكد من الـPassword. هنا البيانات الحقيقية عايشة.
+- **Why:** The user's real data lives in the database. To check the password, the backend must compare what the user typed with what we stored. That stored data is in the database.
+- **What enters:** A **query** — a question asked to the database, like "give me the user with this email."
+- **What leaves:** The **user record** — the stored data for that user (including the saved password hash).
 
 ### 9. Response
 
-بعد ما الـDatabase بترجع بالبيانات والـBackend بيخلص كل خطوات الـValidation، الـBackend بيبني الـ**Response** (زي Success أو Error) ويرجعه بنفس الطريق.
+- **Why:** The user did not ask to know about blocks. The user asked to log in. So the backend builds one clean answer and sends it back.
+- **What enters:** The final result from the Business Logic (success, plus a token).
+- **What leaves:** An **HTTP Response** — a simple message like `200 OK` with the token, ready to travel back.
+
+The response goes back the same way, but in reverse:
 
 ```text
 Database
   ↓ query result
 Business Logic
-  ↓ بيبني الـresult
+  ↓ builds the result
 Authentication
-  ↓ بيضيف الـidentity
+  ↓ adds identity info
 Backend
-  ↓ بيبني HTTP Response
+  ↓ builds HTTP Response
 HTTP
   ↓
 Browser
   ↓
 Frontend
-  ↓ بيعمل render
+  ↓ renders the result
 User
   ↓ sees "Logged in"
 ```
 
-لاحظ إن الـ**Response بيمشي بنفس الطريق بس بالعكس**. كل Block بتمشي للي قبلها لحد ما يوصل للـUser.
+Notice something important.
+The **response walks the same path backwards**.
+Each block hands the result to the one before it, until it reaches the user.
 
 ---
 
 ## 5. Practical Example
 
-نطبق نفس الـScenario على Login حقيقي:
+Let us trace the same scenario on a real login:
 
 ```text
-الـUser بيكتب email + password ويدوس Login
+The user types email + password and clicks Login
    ↓
-الـBrowser بيشغل الـFrontend
+The Browser wakes the Frontend
    ↓
-الـFrontend بيجمع الـdata ويبعتها كـHTTP Request
+The Frontend collects the data and sends an HTTP Request
    ↓
-الـHTTP Request بيوصل للـBackend
+The HTTP Request reaches the Backend
    ↓
-الـBackend بيبعت الـdata للـAuthentication
+The Backend passes the data to Authentication
    ↓
-الـAuthentication بيبعت Query للـDatabase على الـUser record
+Authentication asks the Database for the user record
    ↓
-الـDatabase بترجع الـUser record (فيه الـPassword hash)
+The Database returns the user record (with the password hash)
    ↓
-الـAuthentication بيقارن الـPassword ويرجع نجاح/فشل
+Authentication compares the passwords and returns success/fail
    ↓
-الـBusiness Logic بينشئ Session و JWT
+Business Logic starts a Session and creates a JWT
    ↓
-الـBackend بيبني HTTP Response (200 OK + token)
+The Backend builds the HTTP Response (200 OK + token)
    ↓
-الـHTTP بيوصل للـBrowser
+The HTTP Response reaches the Browser
    ↓
-الـFrontend بيعرض: "Welcome back"
+The Frontend shows: "Welcome back"
    ↓
-الـUser بيشوف: "تم تسجيل الدخول"
+The user sees: "Logged in"
 ```
 
-دي نفس الـFlow اللي حصل. لو أي Block في النص وقّع، الـRequest كله بيوقف. ده عيب طبيعي للـSync flow.
+This is the same flow we described.
+If any block in the middle fails, the whole request stops.
+That is the natural weak point of a Sync flow.
 
 ---
 
 ## 6. Failure and Limits
 
-* **إيه اللي ممكن يفشل؟** أي Block في الطريق ممكن يقع. الـBackend مش متاح، الـDatabase وقّعت، الـAuthentication رفض الـUser، الـHTTP timeout... أي حاجة من دي بتفشل الـLogin.
-* **النظام بيتعامل معاها إزاي؟** كل Block بترجع error بدل ما تفشل بصمت، والـResponse بيرجع يوضح للـUser إن في مشكلة.
-* **متى مش محتاجين الـFlow ده؟** لو الـSystem صغير جداً أو الـdata كلها Client-side، ممكن الـRequest ميلمسش كل الـBlocks دي. بس في الغالب Login بيمشي بالطريق ده.
-* **المشكلة اللي لسه موجودة:** لحد دلوقتي احنا عاملين كل Block كأنه **Black Box**. الـRequest وصل أول Block في الطريق — الـFrontend — بس إيه اللي بيحصل جوه الـFrontend قبل ما الـRequest يمشي في الشبكة؟
+* **What can fail?** Any block on the path can fail. The backend might be down. The database might crash. Authentication might reject the user. The HTTP request might time out. Any of these breaks the login.
+* **How does the system handle it?** Each block returns an error instead of failing silently. The response then tells the user that something went wrong.
+* **When do we not need this flow?** If the system is very small, or all the data lives on the client side, the request might not touch all these blocks. But in most real systems, login follows this path.
+* **What problem is still left?** So far we treated every block as a **black box**. The request reached the first block on the path — the Frontend. But what happens *inside* the Frontend before the request even leaves the user's device?
 
 ---
 
 ## 7. System Position
 
-الـRequest Lifecycle ده مش Module، مش Service، ومش Infrastructure Component. هو **Concept** بيوصف الطريق اللي الـRequest بياخده عبر الـBlocks.
+The Request Lifecycle is not a Module, not a Service, and not an Infrastructure Component.
+It is a **Concept** that describes the path the request takes through the blocks.
 
 ```text
 Frontend
@@ -224,17 +273,18 @@ Frontend
 User
 ```
 
-كل Block في الرسم ده هنتعمق فيه في الـChapter بتاعه. هنا بس بنرسم map للطريق.
+We will go deep into each block in this diagram in its own chapter.
+Here we only draw the map of the path.
 
 ---
 
 ## 8. Key Takeaways
 
-* الـRequest Lifecycle هي **رحلة واحدة** للـRequest من الـUser لحد ما الـResponse يرجع.
-* كل Block ليها **مسؤولية واحدة**، والـRequest بيزورها عشان تعمل المسؤولية دي.
-* الـResponse بيرجع **بنفس الطريق بالعكس**، من الـBackend لحد الـUser.
-* معظم الـFlow ده **Sync**، فأي Block بتبطّي، الـRequest كله بيبطّي وراها.
-* احنا لسه معاملين كل Block كـ**Black Box** — internals بتاعتها لكل Block في الـChapter بتاعه.
+* The Request Lifecycle is **one trip** for a request, from the user to the response and back.
+* Each block has **one responsibility**, and the request visits it to use that responsibility.
+* The **response goes back the same way, in reverse**, from the backend to the user.
+* Most of this flow is **Sync**, so one slow block slows down the whole request.
+* We still treat every block as a **black box** — the inside of each one comes in its own chapter.
 
 ---
 
@@ -243,16 +293,17 @@ User
 ```text
 Current Solution
       ↓
-اتبعنا Login Request من أول نقرة لحد الـResponse،
-وعرفنا إزاي الـRequest بيمشي عبر الـBlocks.
+We followed the Login request from the first click
+to the final response, and we saw how the request
+travels through the blocks.
       ↓
 Remaining Problem
       ↓
-الـRequest أول Block وصل له كان الـFrontend.
-بس إيه اللي بيحصل جوه الـFrontend قبل ما
-الـRequest يمشي في الشبكة أصلاً؟
-جمع الـdata، الـvalidation، الـAPI call...
-كل ده بيحصل قبل ما نغادر جهاز الـUser.
+The first block the request reached was the Frontend.
+But what happens inside the Frontend before the request
+even leaves the user's device?
+Collecting the data, validation, the API call...
+all of that happens before we leave the user's machine.
       ↓
 Next Block
       ↓
