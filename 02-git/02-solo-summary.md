@@ -262,3 +262,116 @@ Merged Branch = Delete Branch
 New Bug Fix = New Branch
 
 Never keep coding on an old merged branch.
+
+## Very Quick Short Summary:
+
+# Git Workflow (Solo Developer)
+
+## New Feature
+
+```bash
+git checkout main
+git pull
+
+git checkout -b feature/feature-name
+```
+
+Work:
+
+```bash
+git add .
+git commit -m "Description"
+git push origin feature/feature-name
+```
+
+Create PR → Merge
+
+Delete branch:
+
+```bash
+git branch -d feature/feature-name
+git push origin --delete feature/feature-name
+```
+
+---
+
+## Bug Fix After Merge
+
+```bash
+git checkout main
+git pull
+
+git checkout -b fix/bug-name
+```
+
+Don't reuse old merged branches.
+
+---
+
+## Useful Commands
+
+Current branch:
+
+```bash
+git branch --show-current
+```
+
+All local branches:
+
+```bash
+git branch
+```
+
+Switch to existing branch:
+
+```bash
+git checkout branch-name
+```
+
+Create new branch:
+
+```bash
+git checkout -b branch-name
+```
+
+---
+
+## Rules
+
+✅ New Feature = New Branch
+
+✅ New Bug Fix = New Branch
+
+✅ Merge → Delete Branch
+
+✅ Clear commit messages
+
+❌ Don't continue coding on a merged branch
+
+❌ Don't use commits like:
+```
+test
+update
+final
+aaa
+```
+
+---
+
+## Simple Flow
+
+```text
+Feature
+  ↓
+Branch
+  ↓
+Commit
+  ↓
+Push
+  ↓
+Pull Request
+  ↓
+Merge
+  ↓
+Delete Branch
+```
